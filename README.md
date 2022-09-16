@@ -1,5 +1,6 @@
 # WEB-DL - Downloader & Decryptor for MPD Streams through CDN's (by iWas <3)
 
+### Dependencies
 Install requirements for the project:
 
 ```console
@@ -15,7 +16,8 @@ sudo apt install aria2 -y
 sudo pacman -S aria2
 ```
 
-Usage:
+### Usage
+(...)
 
 ```console
 python web-dl.py -u <MPD_URL> -o <OUTPUT_FILE>
