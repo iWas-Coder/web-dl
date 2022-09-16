@@ -21,6 +21,7 @@ AUDIO_ID = "ba"
 # === Lambda/Arrow function definitions === #
 cursor_hide = lambda: print('\033[? 25l', end="")
 cursor_show = lambda: print('\033[? 25h', end="")
+banner = lambda: print(BANNER)
 divider = lambda: print('\u2500' * 10)
 err = lambda txt: print(f"[-] {txt}")
 log = lambda txt: print(f"[+] {txt}")
