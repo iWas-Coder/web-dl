@@ -1,4 +1,4 @@
-# WEB-DL - Downloader & Decryptor for MPD Streams through CDN's (by iWas <3)
+# WEB-DL - Downloader & Decryptor for MPD Streams through CDN's
 
 ### Dependencies
 Install requirements for the project:
