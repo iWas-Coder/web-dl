@@ -40,8 +40,10 @@ def get_content(url: str):
              f"-o \"{assets.CACHE_DIR}/encrypted_audio.%(ext)s\" " +
               ">/dev/null 2>&1")
     
-    if os.path.isfile():
-        p.success("Content downloaded")
+    video_has_downloaded = os.path.isfile(f"{assets.CACHE_DIR}/encrypted_video.*")
+    audio_has_downloaded = os.path.isfile(f"{assets.CACHE_DIR}/encrypted_audio.*")
+    if video_has_downloaded and audio_has_downloaded:
+        p.success("Content downloaded successfully")
     else:
         p.failure("Content not downloaded due to errors")
         sys.exit(1)
