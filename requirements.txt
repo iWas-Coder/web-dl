@@ -1,7 +1,4 @@
-cursor; platform_system=="Windows"
 argparse
 validators
 xmltodict==0.12.0
 yt-dlp<=2022.8.14
-ffmpeg==1.4
-aria2p==0.11.2; platform_system!="Linux"
