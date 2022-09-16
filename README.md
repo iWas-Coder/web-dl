@@ -6,7 +6,7 @@ Install requirements for the project:
 ```console
 pip install -r requirements.txt
 ```
-Also, we need the `aria2` package:
+Also, we need some packages:
 - Ubuntu/Debian:
 ```console
 sudo apt install aria2 ffmpeg -y
