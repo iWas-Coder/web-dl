@@ -30,9 +30,6 @@ cursor_hide = lambda: print('\033[? 25l', end="")
 cursor_show = lambda: print('\033[? 25h', end="")
 banner = lambda: print(BANNER)
 divider = lambda: print('\u2500' * 83)
-err = lambda txt: print(f"[-] {txt}")
-log = lambda txt: print(f"[+] {txt}")
-done = lambda txt: print(f"[*] {txt}")
 
 # === Function definitions === #
 def ctrl_c():
@@ -42,7 +39,7 @@ def ctrl_c():
     """
     
     def def_handler(sig, frame):
-        err("Process cancelled by user\n")
+        print("[!] Process cancelled by user\n")
         cursor_show()
         sys.exit(1)
     
