@@ -26,10 +26,7 @@ def get_content(url: str):
               "--allow-unplayable-formats " +
               "--no-check-certificate " +
              f"-f {assets.VIDEO_ID} \"{url}\" " +
-             f"-o \"{assets.CACHE_DIR}/encrypted_video.%(ext)s\" " +
-              ">/dev/null 2>&1")
-    
-    assets.divider()
+             f"-o \"{assets.CACHE_DIR}/encrypted_video.%(ext)s\"")
     
     p.status("Downloading encrypted audio files...")
     time.sleep(2)
@@ -39,8 +36,7 @@ def get_content(url: str):
               "--allow-unplayable-formats " +
               "--no-check-certificate " +
              f"-f {assets.AUDIO_ID} \"{url}\" " +
-             f"-o \"{assets.CACHE_DIR}/encrypted_audio.%(ext)s\" " +
-              ">/dev/null 2>&1")
+             f"-o \"{assets.CACHE_DIR}/encrypted_audio.%(ext)s\"")
     
     p.success("Content downloaded")
 
@@ -51,6 +47,7 @@ def merge():
     """
     
     pass
+
 
 def delete_cache():
     """
