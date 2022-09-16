@@ -20,5 +20,5 @@ sudo pacman -S aria2
 (...)
 
 ```console
-python web-dl.py -u <MPD_URL> -o <OUTPUT_FILE>
+python3 web-dl.py -u <MPD_URL> -o <OUTPUT_FILE>
 ```
