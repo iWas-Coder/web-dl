@@ -1,15 +1,15 @@
 # WEB-DL - Downloader & Decryptor for MPD Streams through CDN's
 
 ### Dependencies
-Install requirements for the project:
+Install Python3 requirements for the project:
 
 ```console
 pip install -r requirements.txt
 ```
-Also, we need some packages:
+Install necessary system packages:
 - Ubuntu/Debian:
 ```console
-sudo apt install aria2 ffmpeg -y
+sudo apt install aria2 ffmpeg
 ```
 - Arch Linux and related:
 ```console
