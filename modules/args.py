@@ -8,7 +8,7 @@ Adding and parsing all arguments, making them accessible.
 import argparse
 
 
-parser = argparse.ArgumentParser(description = "Syncing app between Puppet & CMDB Databases")
+parser = argparse.ArgumentParser(description = "Downloader & Decryptor for MPD Streams through CDNs")
 
 args = {}
 url = lambda: args["url"]
