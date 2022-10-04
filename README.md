@@ -9,11 +9,11 @@ pip install -r requirements.txt
 Install necessary system packages:
 - Ubuntu/Debian:
 ```console
-sudo apt install aria2 ffmpeg
+sudo apt install ffmpeg
 ```
 - Arch Linux and related:
 ```console
-sudo pacman -S aria2 ffmpeg
+sudo pacman -S ffmpeg
 ```
 
 ### Usage
