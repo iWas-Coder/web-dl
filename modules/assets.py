@@ -22,9 +22,6 @@ CWD = os.getcwd()
 CACHE_DIR = CWD + "/cache"
 OUT_DIR = CWD + "/out"
 
-VIDEO_ID = "bv"
-AUDIO_ID = "ba"
-
 # === Lambda/Arrow function definitions === #
 cursor_hide = lambda: print('\033[? 25l', end="")
 cursor_show = lambda: print('\033[? 25h', end="")
