@@ -1,24 +1,12 @@
 # WEB-DL - Downloader & Decryptor for MPD Streams through CDN's
 
 ### Dependencies
-Install Python3 requirements for the project:
+It is required to have both `ffmpeg` and `mp4decrypt` installed and fully accessible in the system.
 
+Also, ensure that all needed python3 requirements are met doing:
 ```console
-pip install -r requirements.txt
-```
-Install necessary system packages:
-- Ubuntu/Debian:
-```console
-sudo apt install ffmpeg
-```
-- Arch Linux and related:
-```console
-sudo pacman -S ffmpeg
+pip3 install -r requirements.txt
 ```
 
-### Usage
-(...)
-
-```console
-python3 web-dl.py -u <MPD_URL> -o <OUTPUT_FILE>
-```
+### Documentation
+Visit the project's [wiki](https://github.com/iWas-Coder/web-dl/wiki) to see how things work in a much deeper explanation.
