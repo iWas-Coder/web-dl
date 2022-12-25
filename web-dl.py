@@ -9,6 +9,7 @@ import modules.decryptor as decryptor
 # === Ctrl+C === #
 assets.ctrl_c()
 
+
 # === MAIN === #
 def main():
     """
@@ -22,20 +23,27 @@ def main():
     # Hide cursor
     assets.cursor_hide()
     
-    # Download content
-    downloader.get_content(args.url())
-    # Extract KID, PR_PSSH, WV_PSSH, KEY
-    decryptor.extract_keys()
-    # Decrypt content
-    decryptor.decrypt()
+    # Checking for DRM protections
+    encrypted = downloader.is_encrypted(args.url())
+    if not encrypted:
+        # Download content
+        downloader.get_content(args.url())
+    else:
+        # Download encrypted content
+        downloader.get_enc_content(args.url())
+        # Extract KID, PR_PSSH, WV_PSSH, KEY
+        decryptor.extract_keys()
+        # Decrypt content
+        decryptor.decrypt()
+    
     # Merge video & audio files
-    downloader.merge()
-    # Delete cache files
-    downloader.delete_cache()
+    if downloader.merge(args.output()):
+        # Delete cache files if merged correctly
+        downloader.delete_cache()
     
     # Show cursor
     assets.cursor_show()
-    
+
 
 if __name__ == "__main__":
     main()
