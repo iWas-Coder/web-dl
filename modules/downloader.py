@@ -20,16 +20,16 @@ def is_encrypted(url: str) -> bool:
     p_check.status("Checking if content is protected (DRM)...")
     time.sleep(2)
     
-    status = os.system(f"yt-dlp --no-warnings -F '{url}' &>/dev/null")
+    status = os.system(f"curl -s '{url}' | grep 'ContentProtection' &>/dev/null")
     # Check status code of previous system-level command
     if status == 0:
-        p_check.success("The content is not protected :D")
-        time.sleep(2)
-        return False
-    else:
         p_check.failure("The content is DRM protected :(")
         time.sleep(2)
         return True
+    else:
+        p_check.success("The content is not protected :D")
+        time.sleep(2)
+        return False
 
 
 def get_enc_content(url: str) -> None:

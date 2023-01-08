@@ -32,7 +32,7 @@ def main():
         # Download encrypted content
         downloader.get_enc_content(args.url())
         # Extract KID, PR_PSSH, WV_PSSH, KEY
-        decryptor.extract_keys()
+        decryptor.extract_keys(args.url())
         # Decrypt content
         decryptor.decrypt()
     
