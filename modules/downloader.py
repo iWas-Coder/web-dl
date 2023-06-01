@@ -91,4 +91,4 @@ def delete_cache() -> None:
     (...)
     """
     
-    os.system("rm -f ./cache/*")
+    os.system("rm -rf ./cache/")
