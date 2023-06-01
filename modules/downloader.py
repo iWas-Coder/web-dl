@@ -6,7 +6,9 @@ Downloader Module
 """
 
 import os
+import sys
 import time
+import glob
 import modules.assets as assets
 from pwn import *
 
@@ -45,8 +47,23 @@ def get_enc_content(url: str) -> None:
     p_audio.status("Downloading encrypted audio files from CDN...")
     os.system(f"yt-dlp --no-warnings --allow-unplayable-formats -f ba '{url}' -o \"{assets.CACHE_DIR}/audio.enc.%(ext)s\"")
     
-    p_video.success("Done!")
-    p_audio.success("Done!")
+    failed = 0
+
+    if glob.glob(f"{assets.CACHE_DIR}/video.enc.*"):
+        p_video.success("Done!")
+    else:
+        p_video.failure("Video download failed :(")
+        failed += 1
+    
+    if glob.glob(f"{assets.CACHE_DIR}/audio.enc.*"):
+        p_audio.success("Done!")
+    else:
+        p_audio.failure("Audio download failed :(")
+        failed += 1
+
+    if failed > 0:
+        delete_cache()
+        sys.exit(1)
 
 
 def get_content(url: str) -> None:
@@ -62,8 +79,24 @@ def get_content(url: str) -> None:
     p_audio.status("Downloading audio files from CDN...")
     os.system(f"yt-dlp --no-warnings -f ba '{url}' -o \"{assets.CACHE_DIR}/audio.%(ext)s\"")
     
-    p_video.success("Done!")
-    p_audio.success("Done!")
+    failed = 0
+
+    if glob.glob(f"{assets.CACHE_DIR}/video.*"):
+        p_video.success("Done!")
+    else:
+        p_video.failure("Video download failed :(")
+        failed += 1
+    
+    if glob.glob(f"{assets.CACHE_DIR}/audio.*"):
+        p_audio.success("Done!")
+    else:
+        p_audio.failure("Audio download failed :(")
+        failed += 1
+
+    if failed > 0:
+        delete_cache()
+        sys.exit(1)
+
 
 
 def merge(output: str) -> bool:
