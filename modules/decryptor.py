@@ -11,6 +11,7 @@ from pprint import pprint
 from pwn import *
 from itertools import tee
 import modules.assets as assets
+import os
 
 
 def pairwise(iterable):
@@ -162,4 +163,6 @@ def extract_keys(url: str):
 
 
 def decrypt(video_keys: dict, audio_keys: dict):
+    # os.system("mv ./cache/video.enc.mp4 ./cache/video.mp4")
+    # os.system("mv ./cache/audio.enc.m4a ./cache/audio.m4a")
     pass

@@ -82,21 +82,20 @@ def get_content(url: str) -> None:
     failed = 0
 
     if glob.glob(f"{assets.CACHE_DIR}/video.*"):
-        p_video.success("Done!")
+        p_video.success("Download successfully :)")
     else:
-        p_video.failure("Video download failed :(")
+        p_video.failure("Download failed :(")
         failed += 1
     
     if glob.glob(f"{assets.CACHE_DIR}/audio.*"):
-        p_audio.success("Done!")
+        p_audio.success("Download successfully :)")
     else:
-        p_audio.failure("Audio download failed :(")
+        p_audio.failure("Download failed :(")
         failed += 1
 
     if failed > 0:
         delete_cache()
         sys.exit(1)
-
 
 
 def merge(output: str) -> bool:
