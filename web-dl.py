@@ -32,9 +32,9 @@ def main():
         # Download encrypted content
         downloader.get_enc_content(args.url())
         # Extract KID, PR_PSSH, WV_PSSH, KEY
-        decryptor.extract_keys(args.url())
+        video_keys, audio_keys = decryptor.extract_keys(args.url())
         # Decrypt content
-        decryptor.decrypt()
+        decryptor.decrypt(video_keys, audio_keys)
     
     # Merge video & audio files
     if downloader.merge(args.output()):
