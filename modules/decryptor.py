@@ -37,51 +37,59 @@ def extract_keys(url: str):
     
     # Periods handling
     periods = xml_root.findall("{urn:mpeg:dash:schema:mpd:2011}Period")
-    durations = []
-    for period in periods:
-        if 'H' in period.attrib['duration']:
-            duration_h = int(''.join(period.attrib['duration'].split('PT')[1].split('H')[0]))
-            duration_m = int(''.join(period.attrib['duration'].split('H')[1].split('M')[0]))
-            duration_s = int(float(''.join(period.attrib['duration'].split('M')[1].split('S')[0])))
-        elif 'M' in period.attrib['duration']:
-            duration_h = 0
-            duration_m = int(''.join(period.attrib['duration'].split('PT')[1].split('M')[0]))
-            duration_s = int(float(''.join(period.attrib['duration'].split('M')[1].split('S')[0])))
-        elif 'S' in period.attrib['duration']:
-            duration_h = 0
-            duration_m = 0
-            duration_s = int(float(''.join(period.attrib['duration'].split('PT')[1].split('S')[0])))
-        else:
-            duration_h = 0
-            duration_m = 0
-            duration_s = 0
 
-        durations.append({
-            'H': duration_h,
-            'M': duration_m,
-            'S': duration_s
-        })
-
-    # Period selection
-    for n, i in enumerate(durations):
-        info(f"Period #{n}: ({i['H']}:{i['M']}:{i['S']})")
-    if len(durations) > 1:
-        biggest = None
-        for i, j in pairwise(durations):
-            if i['H'] > j['H']: biggest = i
-            elif i['H'] < j['H']: biggest = j
-            else:
-                if i['M'] > j['M']: biggest = i
-                elif i['M'] < j['M']: biggest = j
-                else:
-                    if i['S'] > j['S']: biggest = i
-                    elif i['S'] < j['S']: biggest = j
-                    else:
-                        raise Exception("Two periods with same duration! :O")
-        selected_period_idx = durations.index(biggest)
-    else:
+    # ISSUE #5: 'duration' KeyError. There is no argument in the period(s).
+    # In this case, if len(periods) == 1, do not care at all about the duration of the period.
+    # If there are multiple periods, then they should have a duration attribute; if not, pick the first one (and log it).
+    if len(periods) == 1:
         selected_period_idx = 0
-    info(f"Selected Period: {selected_period_idx}")
+        info(f"Selected Period: {selected_period_idx}")
+    else:
+        durations = []
+        for period in periods:
+            if 'H' in period.attrib['duration']:
+                duration_h = int(''.join(period.attrib['duration'].split('PT')[1].split('H')[0]))
+                duration_m = int(''.join(period.attrib['duration'].split('H')[1].split('M')[0]))
+                duration_s = int(float(''.join(period.attrib['duration'].split('M')[1].split('S')[0])))
+            elif 'M' in period.attrib['duration']:
+                duration_h = 0
+                duration_m = int(''.join(period.attrib['duration'].split('PT')[1].split('M')[0]))
+                duration_s = int(float(''.join(period.attrib['duration'].split('M')[1].split('S')[0])))
+            elif 'S' in period.attrib['duration']:
+                duration_h = 0
+                duration_m = 0
+                duration_s = int(float(''.join(period.attrib['duration'].split('PT')[1].split('S')[0])))
+            else:
+                duration_h = 0
+                duration_m = 0
+                duration_s = 0
+
+                durations.append({
+                    'H': duration_h,
+                    'M': duration_m,
+                    'S': duration_s
+                })
+
+        # Period selection
+        for n, i in enumerate(durations):
+            info(f"Period #{n}: ({i['H']}:{i['M']}:{i['S']})")
+        if len(durations) > 1:
+            biggest = None
+            for i, j in pairwise(durations):
+                if i['H'] > j['H']: biggest = i
+                elif i['H'] < j['H']: biggest = j
+                else:
+                    if i['M'] > j['M']: biggest = i
+                    elif i['M'] < j['M']: biggest = j
+                    else:
+                        if i['S'] > j['S']: biggest = i
+                        elif i['S'] < j['S']: biggest = j
+                        else:
+                            raise Exception("Two periods with same duration! :O")
+                        selected_period_idx = durations.index(biggest)
+        else:
+            selected_period_idx = 0
+            info(f"Selected Period: {selected_period_idx}")
 
     assets.divider()
     
@@ -112,24 +120,36 @@ def extract_keys(url: str):
         pass
     else:
         selected_adaptationset_video_idx = adaptationsets_video[0][0]
-    info(f"Selected AdaptationSet (video): {selected_adaptationset_video_idx}")
+        info(f"Selected AdaptationSet (video): {selected_adaptationset_video_idx}")
     if len(adaptationsets_audio) > 1:
         selected_adaptationset_audio_idx = adaptationsets_audio[0][0]
         # TODO: Smart audio selection
         pass
     else:
         selected_adaptationset_audio_idx = adaptationsets_audio[0][0]
-    info(f"Selected AdaptationSet (audio): {selected_adaptationset_audio_idx}")
+        info(f"Selected AdaptationSet (audio): {selected_adaptationset_audio_idx}")
 
     assets.divider()
 
     # KID, PR_PSSH, WV_PSSH extraction (video)
     video_keys = {}
     video_contentprotections = adaptationsets[selected_adaptationset_video_idx].findall("{urn:mpeg:dash:schema:mpd:2011}ContentProtection")
+    
+    # ISSUE #5: It does not pickup the 'ContentProtection' objects, because they are not directly under the 'AdaptationSet' object,
+    # they are however under a 'Representation' object, inside the 'AdaptationSet'.
+    if not video_contentprotections:
+        representations = adaptationsets[selected_adaptationset_video_idx].findall("{urn:mpeg:dash:schema:mpd:2011}Representation")
+        video_contentprotections = representations[0].findall("{urn:mpeg:dash:schema:mpd:2011}ContentProtection")
+    
     for video_contentprotection in video_contentprotections:
         if "{urn:mpeg:cenc:2013}default_KID" in video_contentprotection.attrib:
             video_keys["KID"] = video_contentprotection.attrib["{urn:mpeg:cenc:2013}default_KID"].replace('-', '').lower()
             info(f"KID (video): {video_keys['KID']}")
+            # ISSUE #5: The PSSH value happens to be inside the object with the KID attribute.
+            for child in video_contentprotection:
+                if child.tag == "{urn:mpeg:cenc:2013}pssh":
+                    video_keys["PSSH"] = child.text
+                    info(f"PSSH (video): {video_keys['PSSH']}")
         elif "value" in video_contentprotection.attrib and video_contentprotection.attrib["value"] == "MSPR 2.0":
             for child in video_contentprotection:
                 if child.tag == "{urn:mpeg:cenc:2013}pssh":
@@ -140,13 +160,26 @@ def extract_keys(url: str):
                 if child.tag == "{urn:mpeg:cenc:2013}pssh":
                     video_keys["WV_PSSH"] = child.text
                     info(f"WV_PSSH (video): {video_keys['WV_PSSH']}")
+
     # KID, PR_PSSH, WV_PSSH extraction (audio)
     audio_keys = {}
     audio_contentprotections = adaptationsets[selected_adaptationset_audio_idx].findall("{urn:mpeg:dash:schema:mpd:2011}ContentProtection")
+
+    # ISSUE #5: It does not pickup the 'ContentProtection' objects, because they are not directly under the 'AdaptationSet' object,
+    # they are however under a 'Representation' object, inside the 'AdaptationSet'.
+    if not audio_contentprotections:
+        representations = adaptationsets[selected_adaptationset_audio_idx].findall("{urn:mpeg:dash:schema:mpd:2011}Representation")
+        audio_contentprotections = representations[0].findall("{urn:mpeg:dash:schema:mpd:2011}ContentProtection")
+    
     for audio_contentprotection in audio_contentprotections:
         if "{urn:mpeg:cenc:2013}default_KID" in audio_contentprotection.attrib:
             audio_keys["KID"] = audio_contentprotection.attrib["{urn:mpeg:cenc:2013}default_KID"].replace('-', '').lower()
             info(f"KID (audio): {audio_keys['KID']}")
+            # ISSUE #5: The PSSH value happens to be inside the object with the KID attribute.
+            for child in audio_contentprotection:
+                if child.tag == "{urn:mpeg:cenc:2013}pssh":
+                    audio_keys["PSSH"] = child.text
+                    info(f"PSSH (audio): {audio_keys['PSSH']}")
         elif "value" in audio_contentprotection.attrib and audio_contentprotection.attrib["value"] == "MSPR 2.0":
             for child in audio_contentprotection:
                 if child.tag == "{urn:mpeg:cenc:2013}pssh":
